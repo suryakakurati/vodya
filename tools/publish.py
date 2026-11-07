@@ -27,7 +27,7 @@ NOTES = (
 )
 
 
-def stored_credential() -> str | None:
+def stored_credential():
     out = subprocess.run(
         ["git", "credential", "fill"],
         input="protocol=https\nhost=github.com\n\n",
