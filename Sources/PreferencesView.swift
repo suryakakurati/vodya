@@ -246,8 +246,8 @@ struct PreferencesView: View {
         section("Artwork") {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 8) {
-                    Button("Background PNG…") {
-                        pickPNG { name in store.update { $0.appearance.customBackground = name } }
+                    Button("Background image…") {
+                        pickImage([.image]) { name in store.update { $0.appearance.customBackground = name } }
                     }
                     Button("Clear") {
                         store.update { $0.appearance.customBackground = nil }
@@ -257,7 +257,7 @@ struct PreferencesView: View {
                 }
                 HStack(spacing: 8) {
                     Button("Character PNG…") {
-                        pickPNG { name in store.update { $0.appearance.customFigure = name } }
+                        pickImage([.png]) { name in store.update { $0.appearance.customFigure = name } }
                     }
                     Button("Clear") {
                         store.update { $0.appearance.customFigure = nil }
@@ -265,7 +265,7 @@ struct PreferencesView: View {
                     .disabled(config.appearance.customFigure == nil)
                     Spacer(minLength: 0)
                 }
-                Text("PNG only. Files are copied into Application Support/Vodya/Assets, so the originals can move.")
+                Text("The background can be any image; the character must be a PNG so it keeps its transparency. Files are copied into Application Support/Vodya/Assets.")
                     .font(.system(size: 10))
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -279,15 +279,18 @@ struct PreferencesView: View {
         }
     }
 
-    private func pickPNG(_ apply: @escaping (String) -> Void) {
+    private func pickImage(_ types: [UTType], _ apply: @escaping (String) -> Void) {
         let panel = NSOpenPanel()
-        panel.allowedContentTypes = [.png]
+        panel.allowedContentTypes = types
         panel.allowsMultipleSelection = false
         panel.canChooseDirectories = false
-        panel.message = "Choose a PNG image"
+        panel.message = types == [.png] ? "Choose a PNG image" : "Choose an image"
         guard panel.runModal() == .OK, let url = panel.url else { return }
         do {
-            apply(try Assets.importPNG(from: url))
+            let name = types == [.png]
+                ? try Assets.importPNG(from: url)
+                : try Assets.importImage(from: url)
+            apply(name)
         } catch {
             errorMessage = error.localizedDescription
             showingError = true

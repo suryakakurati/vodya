@@ -1,5 +1,5 @@
 #!/bin/bash
-# Runs the preset / PNG-import / sizing logic checks against a throwaway support dir.
+# Runs the preset / image-import / sizing logic checks against a throwaway support dir.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 mkdir -p build

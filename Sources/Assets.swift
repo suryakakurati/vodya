@@ -24,6 +24,24 @@ enum Assets {
         FileManager.default.fileExists(atPath: directory.appendingPathComponent(fileName).path)
     }
 
+    /// Validates and copies a background image in any format AppKit can decode.
+    /// Characters stay PNG-only, since they need alpha.
+    static func importImage(from source: URL) throws -> String {
+        let data: Data
+        do {
+            data = try Data(contentsOf: source)
+        } catch {
+            throw AssetError.unreadable
+        }
+        guard NSImage(data: data) != nil else { throw AssetError.notImage }
+
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        let suffix = source.pathExtension.lowercased()
+        let name = UUID().uuidString + (suffix.isEmpty ? "" : ".\(suffix)")
+        try data.write(to: directory.appendingPathComponent(name))
+        return name
+    }
+
     /// Validates and copies a PNG into the assets folder, returning its file name.
     static func importPNG(from source: URL) throws -> String {
         guard source.pathExtension.lowercased() == "png" else { throw AssetError.notPNG }
@@ -54,11 +72,13 @@ enum Assets {
 
     enum AssetError: LocalizedError {
         case notPNG
+        case notImage
         case unreadable
 
         var errorDescription: String? {
             switch self {
-            case .notPNG: return "Vodya only accepts PNG images."
+            case .notPNG: return "Character art must be a PNG, so it can keep a transparent background."
+            case .notImage: return "That file is not an image Vodya can read."
             case .unreadable: return "That file could not be read."
             }
         }

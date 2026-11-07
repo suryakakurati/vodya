@@ -13,7 +13,7 @@ then save the whole thing as a preset.
 - Shuffle · previous · back 15s · play/pause · forward 15s · next · repeat.
 - Drag it anywhere, it remembers where it was. Click outside to dismiss.
 - Four palettes (Petal, Soft Purple, Mist, Mono), three sizes, blur or solid.
-- **Your own art**: any PNG as the card background, any PNG as the character.
+- **Your own art**: any image as the card background, a PNG as the character.
 - **Edge light**: a thin coloured rim on the border — on/off, adjustable strength and colour.
 - **Presets**: save the current look under a name and recall it in one click.
 - Everything lives in a hand-editable `config.json` that hot-reloads on save.
@@ -65,13 +65,15 @@ to remove it. Saving under an existing name overwrites that preset.
 
 ### Your own art
 
-- **Background PNG…** replaces whatever the palette draws behind the card.
+- **Background image…** replaces whatever the palette draws behind the card. Any
+  format macOS can read works — PNG, JPEG, HEIC, TIFF, GIF, WebP.
 - **Character PNG…** replaces the bundled figure; the card resizes itself to the
   new image's aspect ratio.
 
-Only PNG files are accepted — the extension, the PNG file signature and the
-decoder are all checked, so a renamed JPEG is rejected with a message instead of
-producing a broken card. Images are copied into
+The character must be a real PNG because it needs an alpha channel: the
+extension, the PNG file signature and the decoder are all checked, and a renamed
+JPEG is rejected with a message instead of producing a broken card. Backgrounds
+only have to decode, so any valid image is accepted. Files are copied into
 `Application Support/Vodya/Assets`, so you can move or delete the originals.
 **Clear** goes back to the bundled art.
 
@@ -187,9 +189,10 @@ toggles rather than cycling track/playlist.
 ```
 
 Runs against a throwaway support directory (`build/selftest-support`) and covers
-PNG-only import (including a renamed JPEG), asset cleanup, preset save/apply/
-delete/overwrite, edge-light colour parsing and the size maths for custom
-figures. CI runs the build, these checks and the preview renderer.
+image import (JPEG accepted for backgrounds, rejected for characters, non-images
+rejected), asset cleanup, preset save/apply/delete/overwrite, edge-light colour
+parsing and the size maths for custom figures. CI runs the build, these checks
+and the preview renderer.
 
 ## License
 

@@ -33,6 +33,25 @@ do {
     check("jpeg renamed .png rejected", true)
 }
 
+// Backgrounds accept any image format, unlike characters.
+do {
+    let name = try Assets.importImage(from: jpeg)
+    check("background accepts jpeg", name.hasSuffix(".jpg") && Assets.image(name) != nil)
+    store.update { $0.appearance.customBackground = name }
+    check("jpeg background stored", store.config.appearance.customBackground == name)
+} catch {
+    check("background accepts jpeg", false)
+}
+
+let notAnImage = Assets.directory.appendingPathComponent("bogus.jpg")
+try? "not an image".data(using: .utf8)?.write(to: notAnImage)
+do {
+    _ = try Assets.importImage(from: notAnImage)
+    check("non-image rejected", false)
+} catch {
+    check("non-image rejected", true)
+}
+
 let png = URL(fileURLWithPath: "assets/vodya-figure.png")
 do {
     let name = try Assets.importPNG(from: png)
