@@ -196,5 +196,8 @@ and the preview renderer.
 
 ## License
 
-MIT — see [LICENSE](LICENSE). Bundled artwork is the author's own; replace it
-with your own PNGs if you fork and redistribute.
+MIT — see [LICENSE](LICENSE). The licence covers the code only. The bundled
+artwork in `assets/` and the screenshots in `docs/` are example images found
+online, included purely to show what the card can look like; they are not
+original work and are not licensed with this project. Replace them with your own
+background and character PNGs if you fork or redistribute.
