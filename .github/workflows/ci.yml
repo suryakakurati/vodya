@@ -1,0 +1,26 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build app
+        run: ./build.sh
+
+      - name: Logic tests
+        run: ./tools/selftest.sh
+
+      - name: Render previews
+        run: ./tools/render-preview.sh
+
+      - name: Upload previews
+        uses: actions/upload-artifact@v4
+        with:
+          name: previews
+          path: build/preview-*.png
