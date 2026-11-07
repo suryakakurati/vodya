@@ -201,12 +201,12 @@ struct PreferencesView: View {
         }
     }
 
-    // MARK: - Glow
+    // MARK: - Edge light
 
     private var glowSection: some View {
-        section("Glow") {
+        section("Edge light") {
             VStack(alignment: .leading, spacing: 8) {
-                Toggle("Glow around the border", isOn: binding(\.appearance.glowEnabled))
+                Toggle("Light around the border", isOn: binding(\.appearance.glowEnabled))
                     .toggleStyle(.switch)
                     .font(.system(size: 12))
 

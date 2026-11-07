@@ -1,4 +1,4 @@
-// Logic checks for presets, PNG import validation and glow sizing.
+// Logic checks for presets, PNG import validation and card sizing.
 // Runs against an isolated support directory (VODYA_SUPPORT_DIR), never your real config.
 import AppKit
 import Foundation
@@ -88,12 +88,14 @@ check("bad hex rejected", Theme.color(hex: "not-a-colour") == nil)
 store.update { $0.appearance.glowColor = "not-a-colour" }
 check("bad glow colour reset", store.config.appearance.glowColor == "auto")
 
-// Sizing reacts to the glow and to a custom figure.
-let plain = CardMetrics(size: "medium", showFigure: true, figureAspect: 0.5, glowInset: 0)
-let glowing = CardMetrics(size: "medium", showFigure: true, figureAspect: 0.5, glowInset: 6)
+// Sizing follows the figure; the edge light sits on the border and adds no space.
+let plain = CardMetrics(size: "medium", showFigure: true, figureAspect: 0.5)
 let wideFigure = CardMetrics(size: "medium", showFigure: true, figureAspect: 0.9)
-check("glow grows the window", glowing.cardWidth > plain.cardWidth && glowing.cardHeight > plain.cardHeight)
+let noFigure = CardMetrics(size: "medium", showFigure: false, figureAspect: 0.5)
+let tallFigure = CardMetrics(size: "medium", showFigure: true, figureAspect: 0.3)
 check("figure aspect widens the slot", wideFigure.cardWidth > plain.cardWidth)
+check("hiding the figure narrows the card", noFigure.cardWidth < plain.cardWidth)
+check("figure aspect leaves the height alone", tallFigure.cardHeight == plain.cardHeight)
 
 print(failures == 0 ? "ALL PASS" : "\(failures) FAILURE(S)")
 exit(failures == 0 ? 0 : 1)

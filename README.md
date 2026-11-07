@@ -2,7 +2,7 @@
 
 A small "Now Playing" card that floats over your Mac. Album art, title, artist, a
 live scrubber and working controls — and a look you can make your own: swap the
-palette, drop in your own background and character art, colour the border glow,
+palette, drop in your own background and character art, colour the border light,
 then save the whole thing as a preset.
 
 ![Petal theme with artwork](docs/card-petal.png)
@@ -14,11 +14,11 @@ then save the whole thing as a preset.
 - Drag it anywhere, it remembers where it was. Click outside to dismiss.
 - Four palettes (Petal, Soft Purple, Mist, Mono), three sizes, blur or solid.
 - **Your own art**: any PNG as the card background, any PNG as the character.
-- **Border glow**: on/off, 0–100% strength, any colour (or follow the accent).
+- **Edge light**: a thin coloured rim on the border — on/off, adjustable strength and colour.
 - **Presets**: save the current look under a name and recall it in one click.
 - Everything lives in a hand-editable `config.json` that hot-reloads on save.
 
-![Glow](docs/card-glow.png)
+![Edge light](docs/card-glow.png)
 
 ## Install
 
@@ -58,7 +58,7 @@ file and reloads the moment you save.
 
 ### Presets
 
-Pick a palette, size, art and glow you like, then **Save current…** in the
+Pick a palette, size, art and edge light you like, then **Save current…** in the
 Presets row. Presets store the entire appearance (not the pin state or hotkeys)
 in `presets.json` next to the config. Select one and hit **Apply**, or **Delete**
 to remove it. Saving under an existing name overwrites that preset.
@@ -78,12 +78,13 @@ producing a broken card. Images are copied into
 A character PNG wants a transparent background; the bundled one was cut out with
 macOS Vision, and `tools/cutout/` has that tool if you want to process your own.
 
-### Glow
+### Edge light
 
-`Glow around the border` toggles a soft bloom outside the card edge. The slider
-sets how far and how strong it spreads, and the colour well sets its hue —
-**Auto** goes back to following the active accent. The window grows a few points
-when the glow is on so the bloom is never clipped.
+`Light around the border` draws a hairline of colour along the card edge — a lit
+rim, not a bloom, so it never muddies the artwork behind it. The slider sets how
+bright that line is (a faint 35% at zero, full colour at 100%) and the colour
+well sets its hue; **Auto** follows the active accent. It costs no space: the line
+sits on the border, so the card keeps its exact size.
 
 ### Palettes and sizes
 
@@ -140,6 +141,8 @@ Both hotkeys are editable in `config.json` (`behavior.hotkey`,
 }
 ```
 
+`glowEnabled`, `glowStrength` and `glowColor` configure the edge light.
+
 Bad values are repaired rather than fatal: unknown palettes fall back to Petal,
 an unparseable `glowColor` becomes `auto`, and a custom asset file that no longer
 exists is dropped.
@@ -165,7 +168,7 @@ toggles rather than cycling track/playlist.
 
 ## Project layout
 
-- `Sources/ContentView.swift` — the card UI, artwork, scrim and glow
+- `Sources/ContentView.swift` — the card UI, artwork, scrim and edge light
 - `Sources/CardConfig.swift` — config model, store, hot reload, presets
 - `Sources/Assets.swift` — PNG import/validation and the asset cache
 - `Sources/NowPlayingModel.swift` — track model, `media-control` polling, Spotify scripting
@@ -174,7 +177,7 @@ toggles rather than cycling track/playlist.
 - `Sources/Palette.swift`, `Sources/Theme.swift` — colour slots and fonts
 - `Sources/CardMetrics.swift` — every dimension from one scale factor
 - `tools/render-preview.sh` — renders `build/preview-*.png` offline
-- `tools/selftest.sh` — preset / PNG / glow logic checks
+- `tools/selftest.sh` — preset / PNG / sizing logic checks
 - `tools/release.sh` — universal build + zip
 
 ## Tests
@@ -185,7 +188,7 @@ toggles rather than cycling track/playlist.
 
 Runs against a throwaway support directory (`build/selftest-support`) and covers
 PNG-only import (including a renamed JPEG), asset cleanup, preset save/apply/
-delete/overwrite, glow colour parsing and the size maths for glow and custom
+delete/overwrite, edge-light colour parsing and the size maths for custom
 figures. CI runs the build, these checks and the preview renderer.
 
 ## License

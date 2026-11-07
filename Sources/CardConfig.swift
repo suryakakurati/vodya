@@ -204,13 +204,12 @@ final class CardStore: ObservableObject {
         return size.width / size.height
     }
 
-    /// The single source of truth for card size, including the room a glow needs.
+    /// The single source of truth for card size.
     var metrics: CardMetrics {
         CardMetrics(
             size: config.appearance.size,
             showFigure: config.appearance.showFigure,
-            figureAspect: figureAspect,
-            glowInset: config.appearance.glowEnabled ? 10 * config.appearance.glowStrength : 0
+            figureAspect: figureAspect
         )
     }
 

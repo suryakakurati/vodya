@@ -34,20 +34,19 @@ struct ContentView: View {
         Theme.color(hex: config.appearance.glowColor) ?? Theme.glow
     }
 
-    /// Drawn behind the clipped card, so only the bloom outside its edge shows.
-    /// A filled shape gives the halo body; the thin stroke keeps the rim crisp.
-    private var glowLayer: some View {
-        ZStack {
-            shape
-                .fill(glowColor)
-                .blur(radius: 10 + 10 * glowStrength)
-                .opacity(0.6 * glowStrength)
-            shape
-                .strokeBorder(glowColor, lineWidth: 1.5 + glowStrength)
-                .blur(radius: 2 + 3 * glowStrength)
-                .opacity(0.8 * glowStrength)
-                .padding(-(2 + 3 * glowStrength))
-        }
+    /// A hairline of light along the border: a lit edge, not a bloom.
+    private var glowEdge: some View {
+        shape
+            .strokeBorder(
+                LinearGradient(
+                    colors: [glowColor, glowColor.opacity(0.45)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                ),
+                lineWidth: 1.25
+            )
+            .shadow(color: glowColor.opacity(0.35 * glowStrength), radius: 1.5)
+            .opacity(glowStrength == 0 ? 0 : 0.35 + 0.65 * glowStrength)
     }
 
     private var metrics: CardMetrics { store.metrics }
@@ -77,7 +76,6 @@ struct ContentView: View {
         )
         .background(background)
         .clipShape(shape)
-        .background(glowLayer)
         .overlay(shape.strokeBorder(Theme.surface1, lineWidth: 2 * max(0.85, metrics.scale)))
         .overlay(
             shape.strokeBorder(
@@ -89,6 +87,7 @@ struct ContentView: View {
                 lineWidth: 1
             )
         )
+        .overlay(glowEdge)
     }
 
     private var background: some View {

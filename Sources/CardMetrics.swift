@@ -11,14 +11,11 @@ struct CardMetrics {
     let scale: CGFloat
     let showFigure: Bool
     let figureAspect: CGFloat
-    /// Extra margin so a border glow has room to bloom outside the card.
-    let glowInset: CGFloat
 
     init(
         size: String,
         showFigure: Bool,
-        figureAspect: CGFloat = FigureAsset.aspect,
-        glowInset: CGFloat = 0
+        figureAspect: CGFloat = FigureAsset.aspect
     ) {
         switch Self.normalizedSize(size) {
         case "small": scale = 0.85
@@ -27,7 +24,6 @@ struct CardMetrics {
         }
         self.showFigure = showFigure
         self.figureAspect = min(max(figureAspect, 0.3), 1.5)
-        self.glowInset = min(max(glowInset, 0), 12)
     }
 
     static func normalizedSize(_ raw: String) -> String {
@@ -38,11 +34,11 @@ struct CardMetrics {
         }
     }
 
-    var padding: CGFloat { Self.basePadding * scale + glowInset * scale }
+    var padding: CGFloat { Self.basePadding * scale }
     var contentWidth: CGFloat { Self.baseContentWidth * scale }
     var figureHeight: CGFloat { Self.baseFigureHeight * scale }
     var figureWidth: CGFloat { showFigure ? (figureHeight * figureAspect).rounded() : 0 }
     var cardWidth: CGFloat { (padding * 2 + contentWidth + figureWidth).rounded() }
-    var cardHeight: CGFloat { (Self.baseCardHeight * scale + glowInset * scale * 2).rounded() }
+    var cardHeight: CGFloat { (Self.baseCardHeight * scale).rounded() }
     var size: NSSize { NSSize(width: cardWidth, height: cardHeight) }
 }
